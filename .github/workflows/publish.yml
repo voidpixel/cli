@@ -41,4 +41,3 @@ jobs:
           file: build/*
           tag: ${{ github.ref }}
           overwrite: true
-          file_glob: true
