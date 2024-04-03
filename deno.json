@@ -1,0 +1,16 @@
+{
+  "tasks": {
+    "start": "deno run --allow-read --allow-write --allow-run ./mod.ts",
+
+    "compile": "deno compile --allow-read --allow-write --allow-run --no-check",
+    "compile:win": "deno task compile --target=x86_64-pc-windows-msvc --output ./build/void_win ./mod.ts",
+    "compile:linux": "deno task compile --target=x86_64-unknown-linux-gnu --output ./build/void_linux ./mod.ts",
+    "compile:mac_x64": "deno task compile --target=x86_64-apple-darwin --output ./build/void_darwin_x64 ./mod.ts",
+    "compile:mac_m1": "deno task compile --target=aarch64-apple-darwin --output ./build/void_darwin_m1 ./mod.ts",
+
+    "compile:all": "(deno task compile:win) & (deno task compile:linux) & (deno task compile:mac_x64) & (deno task compile:mac_m1)"
+  },
+  "imports": {
+    "deno/": "https://deno.land/std@0.221.0/"
+  }
+}

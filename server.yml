@@ -1,0 +1,19 @@
+# file version
+version: 1
+# game build version with patch
+build: 1.2.3
+name: My server name
+# (optional)
+description: Welcome to my server!
+# (optional) server website
+website: example.com
+# (optional) default: false
+public: false
+# (optional) default: true
+sessions: false
+# (optional) default: []
+mods:
+    # mod name [reference from github]
+  - name: pagoru/potato
+    # (optional) default: last version matching the build
+    version: 1.2.3

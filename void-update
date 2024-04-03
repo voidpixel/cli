@@ -1,0 +1,1 @@
+setTimeout(() => Deno.remove('C:/c/voidpixel/cli/build/void_win.exe'), 100);

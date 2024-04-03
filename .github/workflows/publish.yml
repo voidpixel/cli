@@ -1,0 +1,44 @@
+name: Publish
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    name: ''
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Set Versions
+        uses: actions/github-script@v4
+        id: set_version
+        with:
+          script: |
+            const tag = context.ref.substring(10).replace('v', '')
+            core.setOutput('tag', tag)
+
+      - name: Replace config.ts version
+        uses: richardrigutins/replace-in-files@v2
+        with:
+          files: 'config.ts'
+          search-text: '__VERSION__'
+          replacement-text: ${{ steps.set_version.outputs.tag }}
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
