@@ -12,29 +12,37 @@ export const upgradeCommand: Command = {
 	run: async args => {
 		const dirPath = getPath();
 
-		const updateFilePath = path.join(dirPath, './void-update');
+		const isWindows = Deno.build.os === 'windows';
 
-		const execFile = getExecPath().replace(/\\/g, '/');
-		const updatedFile = path
-			.join(dirPath, 'void_win_2.exe')
-			.replace(/\\/g, '/');
+		const updateFilePath =
+			path.join(dirPath, './void-update') + (isWindows ? '.ps1' : '.sh');
 
-		console.log(updatedFile, execFile);
-		await Deno.writeTextFile(
-			updateFilePath,
-			`
-			setTimeout(async () => {
-				await Deno.remove('${execFile}')
-				await Deno.rename('${updatedFile}', '${execFile}');
-			}, 100);
-			`,
+		// Download last version
+		const response = await fetch(
+			'https://api.github.com/repos/voidpixel/cli/releases/latest',
 		);
 
+		const execFile = getExecPath();
+		const updatedFile = path.join(dirPath, 'void_win_2.exe');
+
+		const bash = `#! /bin/bash
+			sleep 0.5
+			rm ${execFile}
+			mv ${updatedFile} ${execFile}`;
+
+		const ps1 = `#!/usr/bin/env pwsh
+			Start-Sleep -Milliseconds 500
+			Remove-Item ${execFile}
+			Move-Item ${updatedFile} ${execFile}
+		`;
+
+		await Deno.writeTextFile(updateFilePath, isWindows ? ps1 : bash);
+
 		Deno.run({
-			cmd: ['deno', 'run', '--allow-write', '--allow-read', updateFilePath],
-			stdout: 'piped',
-			stderr: 'piped',
-			stdin: 'piped',
+			cmd: [isWindows ? 'powershell' : 'sh', updateFilePath],
+			stdin: 'null',
+			stdout: 'null',
+			stderr: 'null',
 			detached: true,
 		});
 	},
