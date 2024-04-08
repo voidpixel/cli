@@ -37,7 +37,7 @@ jobs:
       - name: Set Versions
         run: |
           deno run --allow-all --import-map=https://deno.land/x/wincompile/import_map.json https://deno.land/x/wincompile/wincompile.ts --FileVersion=${{ steps.set_version.outputs.tag }} --ProductVersion=${{ steps.set_version.outputs.tag }}.standard --Icon="./icon.ico" --FileDescription="voidpixel cli" -- --allow-all --no-check ./mod.ts
-          mv cli.exe void_windows.exe
+          mv ./cli.exe ./void_windows.exe
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
