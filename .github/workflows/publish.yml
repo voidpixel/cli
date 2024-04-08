@@ -5,8 +5,54 @@ on:
       - '*'
 
 jobs:
-  publish:
-    name: ''
+  publish-window:
+    name: 'windows'
+
+    runs-on: windows
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Set Versions
+        uses: actions/github-script@v4
+        id: set_version
+        with:
+          script: |
+            const tag = context.ref.substring(10).replace('v', '')
+            core.setOutput('tag', tag)
+
+      - name: Replace config.ts version
+        uses: richardrigutins/replace-in-files@v2
+        with:
+          files: 'config.ts'
+          search-text: '__VERSION__'
+          replacement-text: ${{ steps.set_version.outputs.tag }}
+
+      - name: Set Versions
+        uses: actions/github-script@v4
+        with:
+          script: |
+            deno run -r --allow-run --allow-env --allow-read https://deno.land/x/wincompile/install.ts
+            wincompile --FileVersion=${{ steps.set_version.outputs.tag }} --ProductVersion=${{ steps.set_version.outputs.tag }}.standard --Icon="./icon.ico" --FileDescription="voidpixel cli" -- --allow-all --no-check ./mod.ts
+            mv cli.exe void_windows.exe
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: void_windows.exe
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+
+  publish-darwin-linux:
+    name: 'darwin / linux'
 
     runs-on: ubuntu-latest
 

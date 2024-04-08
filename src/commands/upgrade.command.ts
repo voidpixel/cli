@@ -17,6 +17,7 @@ export const upgradeCommand: Command = {
 
   help: () => "This is the upgrade command!",
   run: async (args, force) => {
+    const dirPath = getPath();
     const updateFilePath = getTemporalUpdateFilePathname();
 
     // Download last version
