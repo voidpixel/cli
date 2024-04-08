@@ -8,7 +8,7 @@ jobs:
   publish-window:
     name: 'windows'
 
-    runs-on: ubuntu-latest
+    runs-on: windows
 
     steps:
       - name: Clone repository
@@ -38,7 +38,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            deno run -r --allow-run --allow-env --allow-read https://deno.land/x/wincompile/install.ts
+            deno run -r --allow-run --allow-env --allow-read https://deno.land/x/wincompile@v0.3.2/install.ts
             wincompile --FileVersion=${{ steps.set_version.outputs.tag }} --ProductVersion=${{ steps.set_version.outputs.tag }}.standard --Icon="./icon.ico" --FileDescription="voidpixel cli" -- --allow-all --no-check ./mod.ts
             mv cli.exe void_windows.exe
 
