@@ -1,6 +1,5 @@
 import { parseArgs } from "deno/cli/parse_args.ts";
 import { commandList } from "./commands/commands.ts";
-import { helpCommand } from "./commands/help.command.ts";
 import { versionCommand } from "./commands/version.command.ts";
 import { getTemporalUpdateFilePathname } from "./utils.ts";
 
@@ -13,6 +12,7 @@ import { getTemporalUpdateFilePathname } from "./utils.ts";
   } catch (err) {}
 }
 
+const helpCommand = commandList.find(({ alias }) => alias.includes("help"));
 const { _, force, f, help, h, version, v, ...props } = parseArgs(Deno.args);
 
 const isArgsEmpty = _.length === 0;
@@ -27,10 +27,8 @@ if (isArgsEmpty && (version || v)) {
 }
 
 const command = commandList.find(({ alias }) =>
-  alias.some((currentAlias: string) =>
-    _.includes(currentAlias.replace("--", ""))
-  )
+  alias.some((currentAlias: string) => _[0] === currentAlias.replace("--", ""))
 );
 
 if (!command) await helpCommand.run();
-else command.run({ ...props, h, help }, force || f);
+else command.run(_, force || f);

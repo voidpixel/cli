@@ -15,7 +15,7 @@ export const upgradeCommand: Command = {
 
   alias: ["upgrade"],
 
-  help: () => "This is the upgrade command!",
+  help: () => "Upgrades the cli",
   run: async (args, force) => {
     const dirPath = getPath();
     const updateFilePath = getTemporalUpdateFilePathname();

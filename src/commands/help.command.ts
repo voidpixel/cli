@@ -1,17 +1,19 @@
 import { Command } from "../types/command.types.ts";
-import { commandList } from "./commands.ts";
 
-export const helpCommand: Command = {
+export const helpCommandFunction = (commandList: Command[]): Command => ({
   name: "Help",
   description: "Help command",
 
   alias: ["help", "--h"],
 
-  help: () => "This is the help command!",
+  help: () => "Help command",
   run: async () => {
-    const commandFilterList = commandList.map(
-      ({ alias, name, description }) => [alias.join(", "), description],
-    );
+    const commandFilterList = commandList.map(({ alias, name, help }) => [
+      alias.join(", "),
+      help(),
+    ]);
+
+    commandFilterList.push(["help, --h", "Help command"]);
 
     let maxLengths = Object.keys(commandFilterList[0]).map((key) =>
       Math.max(...commandFilterList.map((obj) => String(obj[key]).length))
@@ -25,4 +27,4 @@ export const helpCommand: Command = {
     console.log("Available commands:");
     console.log(table);
   },
-};
+});
