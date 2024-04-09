@@ -8,7 +8,7 @@ export const versionCommand: Command = {
 
   alias: ["version", "--v"],
 
-  help: () => "This is the version command!",
+  help: () => "Receive the version of the cli",
   run: async (args) => {
     console.log(green(config.version));
   },
