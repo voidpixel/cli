@@ -19,7 +19,9 @@ export const upgradeCommand: Command = {
   run: async (args, force) => {
     const dirPath = getPath();
     const updateFilePath = getTemporalUpdateFilePathname();
-
+    
+    const isWindows = Deno.build.os === 'windows';
+    
     // Download last version
     let response = await fetch(
       "https://api.github.com/repos/voidpixel/cli/releases/latest",
